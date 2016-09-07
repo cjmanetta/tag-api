@@ -8,9 +8,9 @@ describe 'tag api' do
 	it 'retrieves an entry' do
 		tag = tags[0]
 		get "/api/v1/tags/#{tag.entity.entity_type}/#{tag.entity_id}"
-		# binding.pry
+		binding.pry
 		json = JSON.parse(response.body)
 
-		expect(json['tags'].length).to eq(10)
+		expect(json['entity']['tags'].length).to eq(10)
 	end
 end
