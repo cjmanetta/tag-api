@@ -30,9 +30,18 @@ describe 'tag api' do
 		params = { text: 'Blue', entity_type: entity.entity_type  }
 		post "/api/v1/tags", params: params
 
-		# binding.pry
 		json = JSON.parse(response.body)
 		expect(json['entity']['id']).to eq(entity.id)
 		expect(json['entity']['tags'].length).to eq(1)
+	end
+
+	it 'deletes entity and its tags' do
+		tag = tags[0]
+		delete "/api/v1/tags/#{tag.entity.entity_type}/#{tag.entity_id}"
+
+		json = JSON.parse(response.body)
+		expect(json['entity']['id']).to eq(entity.id)
+
+		expect(Entity.count).to be(0)
 	end
 end

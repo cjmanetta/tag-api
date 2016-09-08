@@ -8,6 +8,16 @@ class Api::V1::TagsController < ApplicationController
 		render json: tag.entity
 	end
 
+	def delete
+		entity = Entity.find(params[:entity_id])
+		binding.pry
+		entity.tags.destroy_all
+		entity.destroy
+
+		render json: entity
+
+	end
+
 	private
 
 	def tag_params
