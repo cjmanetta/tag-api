@@ -15,7 +15,7 @@ describe 'tag api' do
 		expect(json['entity']['tags'].length).to eq(10)
 	end
 
-	it 'creates an entity' do
+	it 'creates an entity when none exists' do
 		params = { text: tag.text, entity_type: tag.entity.entity_type }
 
 		post "/api/v1/tags", params: params
@@ -23,5 +23,16 @@ describe 'tag api' do
 		json = JSON.parse(response.body)
 
 		expect(json['entity']['tags'][0]).to eq(tag.text)
+	end
+
+	it 'replaces all the tags on an entity if it already exists' do 
+
+		params = { text: 'Blue', entity_type: entity.entity_type  }
+		post "/api/v1/tags", params: params
+
+		# binding.pry
+		json = JSON.parse(response.body)
+		expect(json['entity']['id']).to eq(entity.id)
+		expect(json['entity']['tags'].length).to eq(1)
 	end
 end
