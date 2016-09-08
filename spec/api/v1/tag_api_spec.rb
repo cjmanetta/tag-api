@@ -44,4 +44,17 @@ describe 'tag api' do
 
 		expect(Entity.count).to be(0)
 	end
+
+	it 'retrieves stats on all tags' do
+		entity
+		tags
+		entity2 = FactoryGirl.create(:entity)
+		FactoryGirl.create_list(:tag, 5, text: 'Blue', entity_id: entity2.id)
+
+		get "/api/v1/stats"
+
+		json = JSON.parse(response.body)
+
+		expect(json['stats']).to include({'tag' => 'Yellow', 'count' => 10}, {'tag' => 'Blue', 'count' => 5})
+	end
 end
