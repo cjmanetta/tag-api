@@ -45,16 +45,33 @@ describe 'tag api' do
 		expect(Entity.count).to be(0)
 	end
 
-	it 'retrieves stats on all tags' do
-		entity
-		tags
-		entity2 = FactoryGirl.create(:entity)
-		FactoryGirl.create_list(:tag, 5, text: 'Blue', entity_id: entity2.id)
+	describe 'retrieving stats' do
+		it 'retrieves stats on all tags' do
+			entity
+			tags
+			entity2 = FactoryGirl.create(:entity)
+			FactoryGirl.create_list(:tag, 5, text: 'Blue', entity_id: entity2.id)
 
-		get "/api/v1/stats"
+			get "/api/v1/stats"
 
-		json = JSON.parse(response.body)
+			json = JSON.parse(response.body)
 
-		expect(json['stats']).to include({'tag' => 'Yellow', 'count' => 10}, {'tag' => 'Blue', 'count' => 5})
+			expect(json['stats']).to include({'tag' => 'Yellow', 'count' => 10}, {'tag' => 'Blue', 'count' => 5})
+		end
+
+		it 'retrieves stats on all tags for a single entity' do
+			entity
+			FactoryGirl.create(:tag, text: 'Purple', entity_id: entity.id)
+
+			entity2 = FactoryGirl.create(:entity)
+			FactoryGirl.create_list(:tag, 5, text: 'Blue', entity_id: entity2.id)
+
+			get "/api/v1/stats/#{entity.entity_type}/#{entity.id}"
+
+			json = JSON.parse(response.body)
+
+			expect(json['stats']).to include({ 'tag'=> 'Purple', 'count' => 1 })
+			expect(json['stats']).to_not include({ 'tag' => 'Black', 'count'=> 1 })
+		end
 	end
 end

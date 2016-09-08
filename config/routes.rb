@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   		post '/tags', to: 'tags#create'
   		delete '/tags/:entity_type/:entity_id', to: 'tags#delete'
   		get '/stats', to: 'tags#stats' 
+  		get '/stats/:entity_type/:entity_id', to: 'entities#stats' 
   	end
   end
 end
